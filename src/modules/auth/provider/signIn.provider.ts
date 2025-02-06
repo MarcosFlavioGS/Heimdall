@@ -1,5 +1,5 @@
 import { UserRepository } from '@/modules/users/repository/user.repository'
-import { Injectable, UnauthorizedException } from '@nestjs/common'
+import { Injectable, NotFoundException, UnauthorizedException } from '@nestjs/common'
 import { SignInRequest } from '../request/signIn.request'
 import { UserDocument } from '@/modules/users/repository/user.schema'
 
@@ -11,6 +11,10 @@ export class SignInProvider {
 
   async run(request: SignInRequest) {
     const user: UserDocument = await this.userRepository.find({ name: request.name })
+
+    if (!user) {
+      throw new NotFoundException()
+    }
 
     if (!(await bcrypt.compare(request.pass, user?.passHash))) {
       throw new UnauthorizedException()
