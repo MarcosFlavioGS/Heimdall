@@ -1,6 +1,6 @@
 import { UserDocument } from '../repository/user.schema'
 
-export class UserReponse {
+export class UserResponse {
   readonly id: string
   readonly name: string
   readonly mail: string
