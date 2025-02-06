@@ -1,4 +1,4 @@
-import { Body, Controller, Delete, Get, Param, Patch, Post } from '@nestjs/common'
+import { Body, Controller, Delete, Get, HttpCode, HttpStatus, Param, Patch, Post } from '@nestjs/common'
 import { SaveUserRequest, UpdateUserRequest } from '../request/user.request'
 import { UserProvider } from '../provider'
 import { UserResponse } from '../response/user.response'
@@ -22,6 +22,7 @@ export class UserController {
     return this.provider.update.run(id, request)
   }
 
+  @HttpCode(HttpStatus.NO_CONTENT)
   @Delete(':id')
   delete(@Param('id') id: string): Promise<void> {
     return this.provider.delete.run(id)

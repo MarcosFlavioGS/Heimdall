@@ -18,6 +18,11 @@ export class SaveUserRequest {
   @IsPhoneNumber()
   @Transform(({ value }: TransformFnParams) => value?.trim())
   readonly phone: string
+
+  @IsString()
+  @IsNotEmpty()
+  @Transform(({ value }: TransformFnParams) => value?.trim())
+  readonly pass: string
 }
 
 export class UpdateUserRequest {
@@ -37,4 +42,9 @@ export class UpdateUserRequest {
   @IsPhoneNumber()
   @Transform(({ value }: TransformFnParams) => value?.trim())
   readonly phone: string
+
+  @IsString()
+  @IsNotEmpty()
+  @Transform(({ value }: TransformFnParams) => value?.trim())
+  readonly pass: string
 }

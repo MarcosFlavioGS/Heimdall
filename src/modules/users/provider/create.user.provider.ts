@@ -3,16 +3,23 @@ import { SaveUserRequest } from '../request/user.request'
 import { UserRepository } from '../repository/user.repository'
 import { CreateUser } from '../repository/create.user.model'
 import { UserResponse } from '../response/user.response'
+import { UserDocument } from '../repository/user.schema'
+
+import * as bcrypt from 'bcrypt'
 
 @Injectable()
 export class CreateUserProvider {
   constructor(private readonly repository: UserRepository) {}
 
-  async run(user: SaveUserRequest): Promise<UserResponse> {
-    try {
-      const post = await this.repository.save(new CreateUser(user))
+  async run(request: SaveUserRequest): Promise<UserResponse> {
+    const salt = await bcrypt.genSalt()
 
-      return new UserResponse(post)
+    const passHash = await bcrypt.hash(request.pass, salt)
+
+    try {
+      const user: UserDocument = await this.repository.save(new CreateUser({ ...request, pass: passHash }))
+
+      return new UserResponse(user)
     } catch (e) {
       throw new InternalServerErrorException(e)
     }

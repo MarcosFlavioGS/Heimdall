@@ -8,6 +8,7 @@ import { MongooseModule } from '@nestjs/mongoose'
 
 import { isProduction } from '@/helper/environment'
 import { RepositoryConfigProvider } from './repository.config.provider'
+import { AuthModule } from './modules/auth/auth.module';
 
 @Module({
   imports: [
@@ -18,7 +19,8 @@ import { RepositoryConfigProvider } from './repository.config.provider'
     }),
     MongooseModule.forRootAsync({
       useClass: RepositoryConfigProvider
-    })
+    }),
+    AuthModule
   ],
   controllers: [AppController],
   providers: [AppService]
