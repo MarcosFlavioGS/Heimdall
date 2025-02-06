@@ -4,12 +4,19 @@ import { SignInRequest } from '../request/signIn.request'
 import { UserDocument } from '@/modules/users/repository/user.schema'
 
 import * as bcrypt from 'bcrypt'
+import { JwtService } from '@nestjs/jwt'
+import { ConfigService } from '@nestjs/config'
+import { TokenResponse } from '../response/token.response'
 
 @Injectable()
 export class SignInProvider {
-  constructor(private readonly userRepository: UserRepository) {}
+  constructor(
+    private readonly userRepository: UserRepository,
+    private readonly jwtService: JwtService,
+    private readonly config: ConfigService
+  ) {}
 
-  async run(request: SignInRequest) {
+  async run(request: SignInRequest): Promise<TokenResponse> {
     const user: UserDocument = await this.userRepository.find({ name: request.name })
 
     if (!user) {
@@ -20,10 +27,13 @@ export class SignInProvider {
       throw new UnauthorizedException()
     }
 
-    const { passHash, ...result } = user
+    const payload = { sub: user.id, username: user.name }
 
-    //TODO: Generate JWT to return
+    const token = await this.jwtService.signAsync(payload, {
+      secret: this.config.get<string>('TOKEN_SECRET'),
+      expiresIn: this.config.get<number>('TOKEN_EXPIRE')
+    })
 
-    return result
+    return { token }
   }
 }
