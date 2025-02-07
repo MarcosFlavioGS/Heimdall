@@ -7,10 +7,15 @@ import { PatchUserProvider } from './patch.user.provider'
 
 @Injectable()
 export class UserProvider {
-  constructor(readonly repository: UserRepository) {}
+  readonly create: CreateUserProvider
+  readonly get: GetUserProvider
+  readonly update: PatchUserProvider
+  readonly delete: DeleteUserProvider
 
-  readonly create: CreateUserProvider = new CreateUserProvider(this.repository)
-  readonly get: GetUserProvider = new GetUserProvider(this.repository)
-  readonly update: PatchUserProvider = new PatchUserProvider(this.repository)
-  readonly delete: DeleteUserProvider = new DeleteUserProvider(this.repository)
+  constructor(readonly repository: UserRepository) {
+    this.create = new CreateUserProvider(this.repository)
+    this.get = new GetUserProvider(this.repository)
+    this.update = new PatchUserProvider(this.repository)
+    this.delete = new DeleteUserProvider(this.repository)
+  }
 }
